@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Kosan.init({
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     nama: DataTypes.STRING,
     alamat: {
       type: DataTypes.TEXT,
@@ -45,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
-    sisaKamar: {
+    kamarTersedia: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0

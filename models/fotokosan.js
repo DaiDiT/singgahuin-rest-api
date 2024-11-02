@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   FotoKosan.init({
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     keterangan: DataTypes.STRING,
     url: DataTypes.STRING
   }, {

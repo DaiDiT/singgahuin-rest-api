@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('Kosans', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4
       },
       nama: {
         type: Sequelize.STRING,
@@ -41,7 +41,7 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
-      sisaKamar: {
+      kamarTersedia: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0
