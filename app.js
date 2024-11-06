@@ -10,9 +10,9 @@ const sequelize = require("./config/db.js")
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
-//const routes = require("./routes/index.route.js")
+const routes = require("./routes/index.route.js")
 
-//app.use("/api/v1", routes)
+app.use("/api/v1", routes)
 
 app.listen(port, () => {
     console.log(`Server started on ${port}`)

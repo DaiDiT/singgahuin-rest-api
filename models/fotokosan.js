@@ -21,8 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    keterangan: DataTypes.STRING,
-    url: DataTypes.STRING
+    url: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'FotoKosan',

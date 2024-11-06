@@ -57,7 +57,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     kontak: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
   }, {
     sequelize,
