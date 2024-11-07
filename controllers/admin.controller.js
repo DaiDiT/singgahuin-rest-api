@@ -38,7 +38,7 @@ const login = async (req, res) => {
     try {
         const { username, password } = req.body
     
-        const admin = await adminModel.findOne({
+        const admin = await Admin.findOne({
             where: { username },
             attributes: ['id', 'username', 'password', 'salt'] 
         })
@@ -69,7 +69,7 @@ const updatePassword = async (req, res) => {
     try {
         const { password, newPassword } = req.body
     
-        const admin = await adminModel.findByPk(req.admin.id)
+        const admin = await Admin.findByPk(req.admin.id)
     
         if (!admin) return responseHandler.notFound(res)
         

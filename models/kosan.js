@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Kosan.hasMany(models.GambarKosan, {
+      Kosan.hasMany(models.FotoKosan, {
         foreignKey: 'kosanId'
       })
     }
