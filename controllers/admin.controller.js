@@ -1,12 +1,11 @@
 const jsonwebtoken = require("jsonwebtoken")
-const adminModel = require("../models/admin.model.js")
+const { Admin } = require('../models')
 const responseHandler = require("../handlers/response.handler.js")
-const tokenMiddleware = require("../middlewares/token.middleware.js")
 const { Op } = require('sequelize');
 
 const register = async (req, res) => {
     try {
-        const checkAdmin = await adminModel.findOne({
+        const checkAdmin = await Admin.findOne({
             where: {
                 [Op.or]: [
                     { email: req.body.email },
