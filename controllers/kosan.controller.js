@@ -119,7 +119,7 @@ const getAllKosan = async (req, res) => {
 
         const kosans = await Kosan.findAll({
             where: whereCondition,
-            attributes: ['nama', 'alamat', 'tipe', 'hargaKamar', 'kamarTersedia'],
+            attributes: ['id','nama', 'alamat', 'tipe', 'hargaKamar', 'kamarTersedia'],
             include: [{
                 model: FotoKosan,
                 attributes: ['url'],
@@ -131,10 +131,11 @@ const getAllKosan = async (req, res) => {
         const kosansWithImage = kosans.map(kosan => {
             const kosanData = kosan.toJSON();
             if (kosan.FotoKosans.length > 0) {
-                kosanData.urlFoto = `${process.env.BASE_URL}/${kosan.FotoKosans[0].url}`;
+                kosanData.foto = `${process.env.BASE_URL}/${kosan.FotoKosans[0].url}`;
             } else {
-                kosanData.urlFoto = null;
+                kosanData.foto = null;
             }
+
             delete kosanData.FotoKosans;
 
             return kosanData;
@@ -151,14 +152,17 @@ const getKosanById = async (req, res) => {
         const kosan = await Kosan.findByPk(req.params.id, {
             include: [{
                 model: FotoKosan,
-                attributes: ['url'],
+                attributes: ['id', 'url'],
             }]
         })
 
         if (!kosan) return responseHandler.notFound(res, "Kosan not found")
 
         const kosanData = kosan.toJSON()
-        kosanData.foto = kosan.FotoKosans.map(foto => `${process.env.BASE_URL}/${foto.url}`)
+        kosanData.foto = kosan.FotoKosans.map(foto => ({
+            id: foto.id,
+            url: `${process.env.BASE_URL}/${foto.url}`
+        }))
 
         delete kosanData.FotoKosans
 
