@@ -1,6 +1,7 @@
 const { Kosan, FotoKosan } = require('../models')
 const responseHandler = require('../handlers/response.handler')
 const fs = require('fs')
+require("dotenv").config()
 
 const createKosan = async (req, res) => {
     try {
@@ -70,17 +71,17 @@ const deleteKosan = async (req, res) => {
             where: {
                 kosanId: kosan.id
             }
-        });
+        })
           
         fotoKosan.forEach((foto) => {
             fs.unlink(foto.url, (err) => {
                 if (err) {
-                    console.error(`Error deleting file: ${foto.url}`, err);
+                    console.error(`Error deleting file: ${foto.url}`, err)
                 } else {
-                    console.log(`File deleted: ${foto.url}`);
+                    console.log(`File deleted: ${foto.url}`)
                 }
-            });
-        });
+            })
+        })
 
         await FotoKosan.destroy({
             where: {
@@ -99,30 +100,46 @@ const deleteKosan = async (req, res) => {
   
 const getAllKosan = async (req, res) => {
     try {
+        const { tipe, sortBy } = req.query;
+
+        let whereCondition = {};
+        if (tipe) {
+            whereCondition.tipe = tipe;
+        }
+
+        let orderCondition = [];
+        if (sortBy === 'hargaKamar') {
+            orderCondition.push([sortBy, 'ASC'])
+        } else if (sortBy === 'kamarTersedia') {
+            orderCondition.push([sortBy, 'DESC'])
+        }
+
         const kosans = await Kosan.findAll({
+            where: whereCondition,
             include: [{
                 model: FotoKosan,
                 attributes: ['url'],
                 limit: 1,
-            }]
-        })
+            }],
+            order: orderCondition
+        });
 
         const kosansWithImage = kosans.map(kosan => {
-            const kosanData = kosan.toJSON()
+            const kosanData = kosan.toJSON();
             if (kosan.FotoKosans.length > 0) {
-                kosanData.urlFoto = kosan.FotoKosans[0].url
+                kosanData.urlFoto = `${process.env.BASE_URL}/${kosan.FotoKosans[0].url}`;
             } else {
-                kosanData.urlFoto = null
+                kosanData.urlFoto = null;
             }
-            delete kosanData.FotoKosans
+            delete kosanData.FotoKosans;
 
-            return kosanData
-        })
+            return kosanData;
+        });
 
-        responseHandler.ok(res, kosansWithImage)
+        responseHandler.ok(res, kosansWithImage);
     } catch (err) {
-        console.log(err)
-        responseHandler.error(res)
+        console.log(err);
+        responseHandler.error(res);
     }
 }
 
@@ -138,7 +155,9 @@ const getKosanById = async (req, res) => {
         if (!kosan) return responseHandler.notFound(res, "Kosan not found")
 
         const kosanData = kosan.toJSON()
-        kosanData.urlgambar = kosan.FotoKosans.map(foto => foto.url)
+        kosanData.foto = kosan.FotoKosans.map(foto => `${process.env.BASE_URL}/${foto.url}`)
+
+        delete kosanData.FotoKosans
 
         responseHandler.ok(res, kosanData)
     } catch (err) {

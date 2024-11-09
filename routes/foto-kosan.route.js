@@ -1,6 +1,7 @@
 const express = require('express')
 const fotoKosanController = require('../controllers/foto-kosan.controller.js')
 const token = require("../middlewares/token.middleware.js")
+const upload = require('../middlewares/multer.middleware.js')
 
 const router = express.Router()
 
