@@ -21,13 +21,15 @@ const createKosan = async (req, res) => {
             for (const file of req.files) {
                 await FotoKosan.create({
                     kosanId: kosan.id,
+                    nama: file.filename,
                     url: file.path
                 })
             }
         }
   
         responseHandler.created(res, kosan)
-    } catch (error) {
+    } catch (err) {
+        console.log(err, req.params)
         responseHandler.error(res)
     }
 }
@@ -50,18 +52,10 @@ const updateKosan = async (req, res) => {
         kosan.kontak = req.body.kontak || kosan.kontak
     
         await kosan.save()
-    
-        if (req.files && req.files.length > 0) {
-            for (const file of req.files) {
-                await FotoKosan.create({
-                    kosanId: kosan.id,
-                    url: file.path
-                })
-            }
-        }
   
         responseHandler.ok(res, kosan)
-    } catch (error) {
+    } catch (err) {
+        console.log(err)
         responseHandler.error(res)
     }
 }
@@ -97,7 +91,8 @@ const deleteKosan = async (req, res) => {
         await kosan.destroy()
     
         responseHandler.ok(res, { message: "Kosan deleted successfully" })
-    } catch (error) {
+    } catch (err) {
+        console.log(err)
         responseHandler.error(res)
     }
 }
@@ -115,15 +110,18 @@ const getAllKosan = async (req, res) => {
         const kosansWithImage = kosans.map(kosan => {
             const kosanData = kosan.toJSON()
             if (kosan.FotoKosans.length > 0) {
-                kosanData.urlgambar = kosan.FotoKosans[0].url
+                kosanData.urlFoto = kosan.FotoKosans[0].url
             } else {
-                kosanData.urlgambar = null
+                kosanData.urlFoto = null
             }
+            delete kosanData.FotoKosans
+
             return kosanData
         })
 
         responseHandler.ok(res, kosansWithImage)
-    } catch (error) {
+    } catch (err) {
+        console.log(err)
         responseHandler.error(res)
     }
 }
@@ -143,7 +141,8 @@ const getKosanById = async (req, res) => {
         kosanData.urlgambar = kosan.FotoKosans.map(foto => foto.url)
 
         responseHandler.ok(res, kosanData)
-    } catch (error) {
+    } catch (err) {
+        console.log(err)
         responseHandler.error(res)
     }
 }

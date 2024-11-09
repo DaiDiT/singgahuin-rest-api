@@ -18,6 +18,9 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      nama: {
+        type: Sequelize.STRING
+      },
       url: {
         type: Sequelize.TEXT
       },

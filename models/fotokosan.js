@@ -15,12 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   FotoKosan.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
+    nama: DataTypes.STRING,
     url: DataTypes.TEXT
   }, {
     sequelize,

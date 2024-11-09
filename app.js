@@ -13,6 +13,7 @@ app.use(bodyParser.json())
 const routes = require("./routes/index.route.js")
 
 app.use("/api/v1", routes)
+app.use('/uploads', express.static('uploads'));
 
 app.listen(port, () => {
     console.log(`Server started on ${port}`)

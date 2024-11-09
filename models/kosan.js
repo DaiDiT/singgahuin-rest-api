@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   Kosan.init({
     id: {
       type: DataTypes.UUID,
@@ -47,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     hargaKamar: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     kamarTersedia: {

@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.post('/', token.auth, upload.array('photos', 10), kosanController.createKosan)
 
-router.put('/:id', token.auth, upload.array('photos', 10), kosanController.updateKosan)
+router.put('/:id', token.auth, kosanController.updateKosan)
 
 router.delete('/:id', token.auth, kosanController.deleteKosan)
 

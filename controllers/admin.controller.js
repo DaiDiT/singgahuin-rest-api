@@ -25,11 +25,12 @@ const register = async (req, res) => {
         
         await admin.save()
 
+        admin.id = undefined
         admin.password = undefined
         admin.salt = undefined
 
         responseHandler.created(res, {...admin.toJSON()})
-    } catch {
+    } catch (err) {
         responseHandler.error(res)
     }
 }
@@ -45,7 +46,7 @@ const login = async (req, res) => {
     
         if (!admin) return responseHandler.badRequest(res, "Admin didn't exist")
     
-        if (!admin.validPassword(password)) return responseHandler.badRequest(res, "Wrong password")
+        if (!admin.validatePassword(password)) return responseHandler.badRequest(res, "Wrong password")
     
         const token = jsonwebtoken.sign(
             { data: admin.id },
@@ -53,6 +54,7 @@ const login = async (req, res) => {
             { expiresIn: "24h" }
         )
     
+        admin.id = undefined
         admin.password = undefined
         admin.salt = undefined
     
@@ -60,7 +62,7 @@ const login = async (req, res) => {
             token,
             ...admin.toJSON(),
         })
-    } catch {
+    } catch (err) {
         responseHandler.error(res)
     }
 }
@@ -73,14 +75,14 @@ const updatePassword = async (req, res) => {
     
         if (!admin) return responseHandler.notFound(res)
         
-        if (!admin.validPassword(password)) return responseHandler.badRequest(res, "Wrong password")
+        if (!admin.validatePassword(password)) return responseHandler.badRequest(res, "Wrong password")
     
         admin.setPassword(newPassword)
 
         await admin.save()
     
         responseHandler.ok(res, {"message": "Password updated!"})
-    } catch {
+    } catch (err) {
         responseHandler.error(res)
     }
 }
