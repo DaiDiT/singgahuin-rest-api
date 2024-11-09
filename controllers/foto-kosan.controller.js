@@ -22,11 +22,22 @@ const addFotoKosan = async (req, res) => {
         const kosan = await Kosan.findByPk(req.body.kosanId)
 
         if (!kosan) return responseHandler.notFound(res, "Kosan not found")
-            
-        await FotoKosan.create({
+        
+        let uploadedFiles = []
+
+        for (const file of req.files) {
+            const newFoto = await FotoKosan.create({
+                kosanId: kosan.id,
+                nama: file.filename,
+                url: file.path
+            })
+
+            uploadedFiles.push(newFoto.nama)
+        }
+
+        responseHandler.created(res, "Foto Kosan successfully added", {
             kosanId: kosan.id,
-            nama: file.filename,
-            url: file.path
+            uploadedFiles
         })
     } catch (err) {
         responseHandler.error(res);
@@ -38,6 +49,9 @@ const deleteFotoKosan = async (req, res) => {
         const fotoKosan = await FotoKosan.findByPk(req.params.id)
 
         if (!fotoKosan) return responseHandler.notFound(res, "Foto Kosan not found")
+        
+        let kosanId = fotoKosan.kosanId
+        let nama = fotoKosan.nama
 
         fs.unlink(fotoKosan.url, (err) => {
             if (err) {
@@ -48,7 +62,10 @@ const deleteFotoKosan = async (req, res) => {
 
         await fotoKosan.destroy()
 
-        responseHandler.ok(res, { message: "Foto Kosan deleted successfully" })
+        responseHandler.ok(res, "Foto Kosan successfully deleted", {
+            kosanId,
+            nama
+        })
     } catch (err) {
         responseHandler.error(res)
     }

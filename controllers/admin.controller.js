@@ -29,7 +29,7 @@ const register = async (req, res) => {
         admin.password = undefined
         admin.salt = undefined
 
-        responseHandler.created(res, {...admin.toJSON()})
+        responseHandler.created(res, "Admin successfully created", {...admin.toJSON()})
     } catch (err) {
         responseHandler.error(res)
     }
@@ -58,7 +58,7 @@ const login = async (req, res) => {
         admin.password = undefined
         admin.salt = undefined
     
-        responseHandler.ok(res, {
+        responseHandler.ok(res, "Successfully login", {
             token,
             ...admin.toJSON(),
         })
@@ -81,7 +81,10 @@ const updatePassword = async (req, res) => {
 
         await admin.save()
     
-        responseHandler.ok(res, {"message": "Password updated!"})
+        responseHandler.ok(res, "Password updated!", {
+            adminId: admin.id,
+            username: admin.username
+        })
     } catch (err) {
         responseHandler.error(res)
     }

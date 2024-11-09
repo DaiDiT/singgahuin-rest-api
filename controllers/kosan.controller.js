@@ -28,9 +28,8 @@ const createKosan = async (req, res) => {
             }
         }
   
-        responseHandler.created(res, kosan)
+        responseHandler.created(res, "Kosan successfully created", kosan)
     } catch (err) {
-        console.log(err, req.params)
         responseHandler.error(res)
     }
 }
@@ -54,9 +53,8 @@ const updateKosan = async (req, res) => {
     
         await kosan.save()
   
-        responseHandler.ok(res, kosan)
+        responseHandler.ok(res, "Kosan updated successfully", kosan)
     } catch (err) {
-        console.log(err)
         responseHandler.error(res)
     }
 }
@@ -67,6 +65,9 @@ const deleteKosan = async (req, res) => {
     
         if (!kosan) return responseHandler.notFound(res, "Kosan not found")
         
+        let kosanId = kosan.id
+        let namaKosan = kosan.nama
+
         const fotoKosan = await FotoKosan.findAll({
             where: {
                 kosanId: kosan.id
@@ -91,9 +92,11 @@ const deleteKosan = async (req, res) => {
     
         await kosan.destroy()
     
-        responseHandler.ok(res, { message: "Kosan deleted successfully" })
+        responseHandler.ok(res, "Kosan successfully deleted", {
+            kosanId,
+            namaKosan
+        })
     } catch (err) {
-        console.log(err)
         responseHandler.error(res)
     }
 }
@@ -116,6 +119,7 @@ const getAllKosan = async (req, res) => {
 
         const kosans = await Kosan.findAll({
             where: whereCondition,
+            attributes: ['nama', 'alamat', 'tipe', 'hargaKamar', 'kamarTersedia'],
             include: [{
                 model: FotoKosan,
                 attributes: ['url'],
@@ -136,9 +140,8 @@ const getAllKosan = async (req, res) => {
             return kosanData;
         });
 
-        responseHandler.ok(res, kosansWithImage);
+        responseHandler.ok(res, "Success getting all Kosan data", kosansWithImage);
     } catch (err) {
-        console.log(err);
         responseHandler.error(res);
     }
 }
@@ -159,9 +162,8 @@ const getKosanById = async (req, res) => {
 
         delete kosanData.FotoKosans
 
-        responseHandler.ok(res, kosanData)
+        responseHandler.ok(res, "Success getting detailed Kosan data", kosanData)
     } catch (err) {
-        console.log(err)
         responseHandler.error(res)
     }
 }
