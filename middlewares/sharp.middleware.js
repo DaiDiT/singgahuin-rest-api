@@ -23,7 +23,6 @@ const removeMetadata = async (req, res, next) => {
         }
         next()
     } catch (err) {
-        console.log(err)
         return responseHandler.error(res, "Error processing image metadata and resizing")
     }
 }
