@@ -1,42 +1,42 @@
-const jsonwebtoken = require("jsonwebtoken");
-const responseHandler = require("../handlers/response.handler.js");
-const { Admin } = require("../models");
+const jsonwebtoken = require("jsonwebtoken")
+const responseHandler = require("../handlers/response.handler.js")
+const { Admin } = require("../models")
 
 const decodeToken = (req) => {
     try {
-        const bearerHeader = req.headers["authorization"];
+        const bearerHeader = req.headers["authorization"]
 
         if (bearerHeader) {
-            const token = bearerHeader.split(" ")[1];
+            const token = bearerHeader.split(" ")[1]
 
             return jsonwebtoken.verify(
                 token,
                 process.env.TOKEN_SECRET
-            );
+            )
         }
 
-        return false;
+        return false
     } catch {
-        return false;
+        return false
     }
-};
+}
 
 const auth = async (req, res, next) => {
-    const decodedToken = decodeToken(req);
+    const decodedToken = decodeToken(req)
 
-    if (!decodedToken) return responseHandler.unauthorized(res);
+    if (!decodedToken) return responseHandler.unauthorized(res)
 
     try {
-        const admin = await Admin.findByPk(decodedToken.data);
+        const admin = await Admin.findByPk(decodedToken.data)
 
-        if (!admin) return responseHandler.unauthorized(res);
+        if (!admin) return responseHandler.unauthorized(res)
 
-        req.admin = admin;
+        req.admin = admin
 
-        next();
-    } catch (error) {
-        return responseHandler.error(res, "Server error during authentication");
+        next()
+    } catch (err) {
+        return responseHandler.error(res, "Server error during authentication")
     }
-};
+}
 
-module.exports = { auth, decodeToken };
+module.exports = { auth, decodeToken }
