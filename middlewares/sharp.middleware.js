@@ -9,16 +9,25 @@ const removeMetadata = async (req, res, next) => {
             for (const file of req.files) {
                 const filePath = path.join(__dirname, '..', file.path)
 
-                const data = await sharp(filePath)
-                    .resize({
-                        height: 720,
-                        withoutEnlargement: true
-                    })
+                const image = sharp(filePath)
+                const metadata = await image.metadata()
+
+                let resizeOptions = {}
+                if (metadata.width > metadata.height) {
+                    resizeOptions = { height: 720, withoutEnlargement: true }
+                } else {
+                    resizeOptions = { width: 720, withoutEnlargement: true }
+                }
+
+                const data = await image
+                    .resize(resizeOptions)
                     .toFormat('jpeg')
                     .jpeg({ quality: 90 })
                     .toBuffer()
 
-                await fs.promises.writeFile(filePath, data)
+                await fs.promises.writeFile(filePath, data).catch(err => {
+                    console.error('Error writing file:', err);
+                })
             }
         }
         next()
