@@ -103,14 +103,14 @@ const deleteKosan = async (req, res) => {
   
 const getAllKosan = async (req, res) => {
     try {
-        const { tipe, sortBy } = req.query;
+        const { tipe, sortBy } = req.query
 
-        let whereCondition = {};
+        let whereCondition = {}
         if (tipe) {
-            whereCondition.tipe = tipe;
+            whereCondition.tipe = tipe
         }
 
-        let orderCondition = [];
+        let orderCondition = []
         if (sortBy === 'hargaKamar') {
             orderCondition.push([sortBy, 'ASC'])
         } else if (sortBy === 'kamarTersedia') {
@@ -119,31 +119,32 @@ const getAllKosan = async (req, res) => {
 
         const kosans = await Kosan.findAll({
             where: whereCondition,
-            attributes: ['id','nama', 'alamat', 'tipe', 'hargaKamar', 'kamarTersedia'],
+            attributes: ['id','nama', 'alamat', 'tipe', 'hargaKamar', 'kamarTersedia', 'kontak'],
             include: [{
                 model: FotoKosan,
                 attributes: ['url'],
                 limit: 1,
             }],
             order: orderCondition
-        });
+        })
 
         const kosansWithImage = kosans.map(kosan => {
-            const kosanData = kosan.toJSON();
+            const kosanData = kosan.toJSON()
             if (kosan.FotoKosans.length > 0) {
-                kosanData.foto = `${process.env.BASE_URL}/${kosan.FotoKosans[0].url}`;
+                kosanData.foto = `data:image/jpeg;base64,${fs.readFileSync(kosan.FotoKosans[0].url).toString('base64')}`
             } else {
-                kosanData.foto = null;
+                kosanData.foto = null
             }
 
-            delete kosanData.FotoKosans;
+            delete kosanData.FotoKosans
 
-            return kosanData;
-        });
+            return kosanData
+        })
 
-        responseHandler.ok(res, "Success getting all Kosan data", kosansWithImage);
+        responseHandler.ok(res, "Success getting all Kosan data", kosansWithImage)
     } catch (err) {
-        responseHandler.error(res);
+        console.log(err)
+        responseHandler.error(res)
     }
 }
 
@@ -161,7 +162,8 @@ const getKosanById = async (req, res) => {
         const kosanData = kosan.toJSON()
         kosanData.foto = kosan.FotoKosans.map(foto => ({
             id: foto.id,
-            url: `${process.env.BASE_URL}/${foto.url}`
+            url: `${process.env.BASE_URL}/${foto.url.replace(/\\/g, '/')}`,
+            base64: `data:image/jpeg;base64,${fs.readFileSync(foto.url).toString('base64')}`
         }))
 
         delete kosanData.FotoKosans

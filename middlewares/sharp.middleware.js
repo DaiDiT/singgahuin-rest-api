@@ -8,6 +8,7 @@ const removeMetadata = async (req, res, next) => {
         if (req.files) {
             for (const file of req.files) {
                 const filePath = path.join(__dirname, '..', file.path)
+                const tempFilePath = path.join(__dirname, '..', 'temp-' + file.filename)
 
                 const image = sharp(filePath)
                 const metadata = await image.metadata()
@@ -25,9 +26,9 @@ const removeMetadata = async (req, res, next) => {
                     .jpeg({ quality: 90 })
                     .toBuffer()
 
-                await fs.promises.writeFile(filePath, data).catch(err => {
-                    console.error('Error writing file:', err);
-                })
+                await fs.promises.writeFile(tempFilePath, data)
+
+                await fs.promises.rename(tempFilePath, filePath)
             }
         }
         next()
