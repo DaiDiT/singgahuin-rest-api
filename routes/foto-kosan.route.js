@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get('/:id', fotoKosanController.getFotoKosan)
 
-router.post('/', token.auth, upload.array('photos', 10), sharp.removeMetadata, fotoKosanController.addFotoKosan)
+router.post('/', token.auth, upload.array('photos', 8), sharp.removeMetadata, fotoKosanController.addFotoKosan)
 
 router.delete('/:id', token.auth, fotoKosanController.deleteFotoKosan)
 

@@ -6,7 +6,7 @@ const sharp = require('../middlewares/sharp.middleware.js')
 
 const router = express.Router()
 
-router.post('/', token.auth, upload.array('photos', 10), sharp.removeMetadata, kosanController.createKosan)
+router.post('/', token.auth, upload.array('photos', 8), sharp.removeMetadata, kosanController.createKosan)
 
 router.put('/:id', token.auth, kosanController.updateKosan)
 

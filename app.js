@@ -7,6 +7,14 @@ const port = process.env.PORT
 
 const sequelize = require("./config/db.js")
 
+const cors = require("cors")
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}))
+
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
