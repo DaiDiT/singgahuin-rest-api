@@ -10,4 +10,6 @@ router.post("/login", adminController.login)
 
 router.put("/", token.auth, adminController.updatePassword)
 
+router.delete("/", adminController.deleteAdmin)
+
 module.exports = router

@@ -41,7 +41,7 @@ const login = async (req, res) => {
     
         const admin = await Admin.findOne({
             where: { username },
-            attributes: ['id', 'username', 'password', 'salt'] 
+            attributes: ['id', 'fullName', 'username', 'password', 'salt'] 
         })
     
         if (!admin) return responseHandler.badRequest(res, "Admin didn't exist")
@@ -90,4 +90,30 @@ const updatePassword = async (req, res) => {
     }
 }
 
-module.exports = { register, login, updatePassword }
+const deleteAdmin = async (req, res) => {
+    try {
+        const admin = await Admin.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
+    
+        if (!admin) return responseHandler.badRequest(res, "This admin is not exist.")
+        
+        fullName = admin.fullName
+        username = admin.username
+        email = admin.email
+
+        await admin.destroy()
+
+        responseHandler.ok(res, "Admin successfully deleted", {
+            fullName,
+            username,
+            email
+        })
+    } catch (err) {
+        responseHandler.error(res)
+    }
+}
+
+module.exports = { register, login, updatePassword, deleteAdmin }

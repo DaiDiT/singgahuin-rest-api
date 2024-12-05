@@ -40,6 +40,7 @@ const addFotoKosan = async (req, res) => {
             uploadedFiles
         })
     } catch (err) {
+        console.log(err)
         responseHandler.error(res);
     }
 }
